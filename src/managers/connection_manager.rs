@@ -1,8 +1,8 @@
+use serde_json::json;
 use std::time::{Duration, Instant};
 use tokio::time::interval;
-use serde_json::json;
 
-use crate::types::client::RustlinkMock;
+use crate::types::stats::RustlinkMock;
 // use crate::utils::make_request::make_request; // Stubbed for now
 
 const TEST_FILE_URL: &str = "http://cachefly.cachefly.net/10mb.test";
@@ -42,7 +42,7 @@ impl ConnectionManager {
         let start_time = Instant::now();
         // Mock download
         // ...
-        
+
         self.is_checking = false;
     }
 }

@@ -9,6 +9,7 @@ use crate::types::stats::RustlinkMock;
 use std::sync::{Arc, RwLock};
 use serde::Deserialize;
 use serde_json::json;
+use chrono::Utc;
 
 #[derive(Deserialize)]
 pub struct SessionPatch {

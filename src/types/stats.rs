@@ -1,44 +1,16 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use crate::managers::session_manager::SessionManager;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RustlinkStats {
-    pub players: u32,
-    pub playing_players: u32,
+    pub players: usize,
+    #[serde(rename = "playingPlayers")]
+    pub playing_players: usize,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlayerConnectionStats {
-    pub packets_sent: u64,
-    pub packets_lost: u64,
-    pub packets_expect: u64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlayerConnection {
-    pub statistics: PlayerConnectionStats,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Player {
-    pub guild_id: String,
-    pub connection: Option<PlayerConnection>,
-}
-
-#[derive(Debug, Clone)]
-pub struct SessionPlayers {
-    pub players: HashMap<String, Player>,
-}
-
-#[derive(Debug, Clone)]
-pub struct Session {
-    pub players: SessionPlayers,
-}
-
-#[derive(Debug, Clone)]
 pub struct RustlinkMock {
     pub statistics: RustlinkStats,
-    pub sessions: HashMap<String, Session>,
+    pub sessions: SessionManager,
 }
 
 // Estructuras de Salida (DTOs)

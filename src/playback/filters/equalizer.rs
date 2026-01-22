@@ -1,5 +1,6 @@
 use crate::playback::SAMPLE_RATE;
 use super::dsp::clamp_16_bit::clamp_16_bit;
+use crate::types::filters::BandSetting;
 use std::f32::consts::PI;
 
 const BAND_FREQUENCIES: [f32; 15] = [
@@ -34,12 +35,6 @@ pub struct Equalizer {
     pub priority: u32,
     filters_state: Vec<FilterState>,
     filters_coefficients: Vec<FilterCoefficients>,
-}
-
-#[derive(Clone, Copy)]
-pub struct BandSetting {
-    pub band: usize,
-    pub gain: f32,
 }
 
 impl Equalizer {

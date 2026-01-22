@@ -56,11 +56,13 @@ pub async fn make_request(
     };
 
     let host = url.host_str().unwrap_or("").to_string();
-    {
+    let is_failed = {
         let failed_hosts = HTTP2_FAILED_HOSTS.lock().unwrap();
-        if failed_hosts.contains(&host) {
-            return http1_make_request(url_string, options).await;
-        }
+        failed_hosts.contains(&host)
+    };
+
+    if is_failed {
+        return http1_make_request(url_string, options).await;
     }
 
     // Attempt HTTP/2 request

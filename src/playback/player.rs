@@ -1,6 +1,6 @@
 use std::time::SystemTime;
 use serde_json::{json, Value};
-use crate::types::client::RustlinkMock; // Assuming this exists or I use generic
+use crate::types::stats::RustlinkMock;
 // I don't have access to RustlinkMock definition easily, but I can use generic placeholders.
 
 use super::filters_manager::FiltersManager;
@@ -111,5 +111,22 @@ impl Player {
     pub fn destroy(&mut self) {
         self.stop();
         self.conn_status = "destroyed".to_string();
+    }
+
+    pub fn to_json(&self) -> Value {
+        json!({
+            "guildId": self.guild_id,
+            "track": self.track,
+            "volume": self.volume_percent,
+            "paused": self.is_paused,
+            "filters": self.filters,
+            "state": {
+                "time": SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or_default().as_millis() as u64,
+                "position": self.position,
+                "connected": self.conn_status == "connected",
+                "ping": 0
+            },
+            "voice": {} 
+        })
     }
 }

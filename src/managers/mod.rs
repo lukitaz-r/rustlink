@@ -7,4 +7,3 @@ pub mod route_planner_manager;
 pub mod session_manager;
 pub mod source_manager;
 pub mod stats_manager;
-pub mod worker_manager;

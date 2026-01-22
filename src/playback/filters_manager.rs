@@ -5,7 +5,8 @@ use super::filters::chorus::Chorus;
 use super::filters::compressor::Compressor;
 use super::filters::distortion::Distortion;
 use super::filters::echo::Echo;
-use super::filters::equalizer::{BandSetting, Equalizer};
+use super::filters::equalizer::Equalizer;
+use crate::types::filters::BandSetting;
 use super::filters::highpass::Highpass;
 use super::filters::karaoke::Karaoke;
 use super::filters::lowpass::Lowpass;
@@ -56,8 +57,10 @@ impl FiltersManager {
         let filters = options.get("filters").unwrap_or(options);
 
         // Helper to get float
-        let get_f32 = |obj: &Value, key: &str| obj.get(key).and_then(|v| v.as_f64()).map(|v| v as f32);
-        let get_usize = |obj: &Value, key: &str| obj.get(key).and_then(|v| v.as_u64()).map(|v| v as usize);
+        let get_f32 =
+            |obj: &Value, key: &str| obj.get(key).and_then(|v| v.as_f64()).map(|v| v as f32);
+        let get_usize =
+            |obj: &Value, key: &str| obj.get(key).and_then(|v| v.as_u64()).map(|v| v as usize);
 
         // Timescale
         if let Some(cfg) = filters.get("timescale") {
@@ -70,18 +73,14 @@ impl FiltersManager {
 
         // Tremolo
         if let Some(cfg) = filters.get("tremolo") {
-            self.tremolo.update(
-                get_f32(cfg, "frequency"),
-                get_f32(cfg, "depth"),
-            );
+            self.tremolo
+                .update(get_f32(cfg, "frequency"), get_f32(cfg, "depth"));
         }
 
         // Vibrato
         if let Some(cfg) = filters.get("vibrato") {
-            self.vibrato.update(
-                get_f32(cfg, "frequency"),
-                get_f32(cfg, "depth"),
-            );
+            self.vibrato
+                .update(get_f32(cfg, "frequency"), get_f32(cfg, "depth"));
         }
 
         // Lowpass
@@ -136,12 +135,13 @@ impl FiltersManager {
         // Equalizer
         if let Some(cfg) = filters.get("equalizer") {
             if let Some(bands_arr) = cfg.as_array() {
-                let bands: Vec<BandSetting> = bands_arr.iter().map(|b| {
-                    BandSetting {
+                let bands: Vec<BandSetting> = bands_arr
+                    .iter()
+                    .map(|b| BandSetting {
                         band: get_usize(b, "band").unwrap_or(0),
                         gain: get_f32(b, "gain").unwrap_or(0.0),
-                    }
-                }).collect();
+                    })
+                    .collect();
                 self.equalizer.update(&bands);
             }
         }
@@ -198,43 +198,43 @@ impl FiltersManager {
 
         // Priority 10: The rest
         // Applied in-place on the buffer.
-        
+
         // Tremolo
         self.tremolo.process(&mut buffer);
-        
+
         // Vibrato
         self.vibrato.process(&mut buffer);
-        
+
         // Lowpass
         self.lowpass.process(&mut buffer);
-        
+
         // Highpass
         self.highpass.process(&mut buffer);
-        
+
         // Rotation
         self.rotation.process(&mut buffer);
-        
+
         // Karaoke
         self.karaoke.process(&mut buffer);
-        
+
         // Distortion
         self.distortion.process(&mut buffer);
-        
+
         // ChannelMix
         self.channel_mix.process(&mut buffer);
-        
+
         // Equalizer
         self.equalizer.process(&mut buffer);
-        
+
         // Chorus
         self.chorus.process(&mut buffer);
-        
+
         // Compressor
         self.compressor.process(&mut buffer);
-        
+
         // Echo
         self.echo.process(&mut buffer);
-        
+
         // Phaser
         self.phaser.process(&mut buffer);
 
